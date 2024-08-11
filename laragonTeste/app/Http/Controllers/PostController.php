@@ -4,12 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+Carbon::setLocale('pt_BR');
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
+        // Buscar todos os posts
+        $posts = Post::all()->map(function($post) {
+            // Adicionar a data formatada
+            $post->formatted_date = Carbon::parse($post->created_at)->diffForHumans();
+            return $post;
+        });
+
+        // Passar os posts para a view
         return view('posts.index', compact('posts'));
     }
 
