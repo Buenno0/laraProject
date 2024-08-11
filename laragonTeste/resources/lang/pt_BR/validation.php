@@ -108,13 +108,12 @@ return [
     'starts_with'          => 'O :attribute deve começar com um dos seguintes: :values.',
     'string'               => 'O :attribute deve ser uma string.',
     'timezone'             => 'O :attribute deve ser uma zona válida.',
-    'unique'               => 'O :attribute já foi tomado.',
+    'unique'               => 'O :attribute já existe.',
     'uploaded'             => 'O :attribute falhou ao fazer upload.',
     'url'                  => 'O formato de :attribute é inválido.',
     'uuid'                 => 'O :attribute deve ser um UUID válido.',
 
     'custom' => [
-        // Exemplo de personalização para um campo específico
         'name' => [
             'required' => 'O campo Nome é obrigatório.',
         ],

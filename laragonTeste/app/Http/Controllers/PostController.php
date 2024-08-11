@@ -12,8 +12,8 @@ class PostController extends Controller
     public function index()
     {
         // Buscar todos os posts
-        $posts = Post::all()->map(function($post) {
-            // Adicionar a data formatada
+        $posts = Post::orderBy('created_at', 'desc')->get()->map(function($post) {
+
             $post->formatted_date = Carbon::parse($post->created_at)->diffForHumans();
             return $post;
         });

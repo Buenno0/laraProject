@@ -2,7 +2,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use App\Mail\WelcomeEmail; 
+use Illuminate\Support\Facades\Mail; 
+use Illuminate\Support\Facades\Log;
+
 
 class UserController extends Controller
 {
@@ -21,19 +26,32 @@ class UserController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-        ]);
+{
+    $validatedData = $request->validate([
+        'name' => 'required|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:8|confirmed',
+    ]);
 
-        $validatedData['password'] = bcrypt($validatedData['password']);
+    $validatedData['password'] = bcrypt($validatedData['password']);
 
-        User::create($validatedData);
+    // Criar o usuário
+    $user = User::create($validatedData);
 
-        return redirect()->route('users.index')->with('success', 'Usuário criado com sucesso!');
+    // Tentar enviar o e-mail
+    try {
+        Mail::to($user->email)->send(new WelcomeEmail($user));
+    } catch (Exception $e) {
+        // Registrar o erro no log
+        Log::error('Erro ao enviar o e-mail de boas-vindas: ' . $e->getMessage());
+
+        // Retornar uma mensagem de erro para o usuário
+        return redirect()->route('users.index')->with('error', 'Usuário criado, mas ocorreu um erro ao enviar o e-mail.');
     }
+
+    // Continuar com o fluxo normal
+    return redirect()->route('users.index')->with('success', 'Usuário criado com sucesso e e-mail enviado!');
+}
 
     public function show(User $user)
     {
