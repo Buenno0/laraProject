@@ -1,8 +1,8 @@
-@extends ('layout')
+@extends('layout')
 
-@section ('title', 'Todos os Usuários')
+@section('title', 'Todos os Usuários')
 
-@section ('content')
+@section('content')
     <!-- Incluindo o Bootstrap no head -->
     @push('head')
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
@@ -74,6 +74,17 @@
 
     <div class="container my-4">
         <h1>Todos os Usuários</h1>
+
+        @auth
+            <p>Olá, {{ auth()->user()->name }}! Você está logado.</p>
+            <form method="POST" action="{{ route('logout') }}" class="my-3">
+                @csrf
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        @else
+            <p>Você não está logado. <a href="{{ route('login') }}" class="btn btn-primary">Faça login</a></p>
+        @endauth
+
         <a href="{{ route('users.create') }}" class="btn btn-primary my-4">Criar Novo Usuário</a>
 
         @if ($users->count())
@@ -84,18 +95,14 @@
                             <div class="card-body">
                                 <h2 class="card-title">{{ $user->name }}</h2>
                                 <p class="card-text">{{ $user->email }}</p>
-                                <p class="text-muted
-                                ">Criado em {{ $user->created_at->format('d/m/Y H:i') }}</p>
+                                <p class="text-muted">Criado em {{ $user->created_at->format('d/m/Y H:i') }}</p>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
         @else
-            
             <p>Nenhum usuário cadastrado.</p>
         @endif
     </div>
 @endsection
-   
-
